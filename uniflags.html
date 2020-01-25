@@ -1,0 +1,648 @@
+<!DOCTYPE html>
+<html>
+ <head>
+  <title>UNICODE Flag Memory game</title>
+  <meta charset='utf-8'/>
+  <meta name='viewport' content='width=device-width,initial-scale=1'>
+  <meta name='keywords' content='memory,match,concentration,pairs,flags,unicode'>
+  <meta property='og:type' content='game'>
+  <meta property='og:description' content='Memory game using flags representable as UNICODE Regional Indicator Symbol pairs'>
+  <style>
+
+ html {
+  min-width: calc(32*21ex);
+ }
+
+ #board td {
+  width: 20ex;
+  height: 20ex;
+  min-width: 20ex;
+  min-height: 20ex;
+  max-width: 20ex;
+  max-height: 20ex;
+  border: 1px solid gray;
+  border-radius: 2ex;
+  padding: 1ex;
+  padding-top: 0;
+  vertical-align: top;
+ }
+
+ #board td.empty {
+  border: none;
+ }
+
+ #board td.hidden {
+  background-color: orange;
+ }
+
+ #board td.hidden * {
+  visibility: hidden;
+ }
+
+ #board td.found {
+  color: rgba(0, 0, 0, 0.5);
+ }
+
+ .flag {
+  font-size: 18ex;
+  text-align: center;
+  line-height: 1;
+  width: 100%;
+ }
+ .desc {
+  display: block;
+  font-size: 50%;
+  width: 100%;
+ }
+
+ #score {
+  border-radius: 0 !important;
+  border: none !important;
+  padding-top: 1ex !important;
+ }
+ .flash {
+  background-color: red;
+  color: white;
+  font-weight: bold;
+  transition: background-color .25s linear, color .25s linear;
+ }
+ .flash > div {
+  font-size: 144%;
+ }
+
+
+
+  </style>
+  <script type='text/javascript'>
+   //<!CDATA![
+   const current_codes = {
+    //{{{
+    AC:	"Ascension Island",
+    AD:	"Andorra",
+    AE:	"United Arab Emirates",
+    AF:	"Afghanistan",
+    AG:	"Antigua & Barbuda",
+    AI:	"Anguilla",
+    AL:	"Albania",
+    AM:	"Armenia",
+    AO:	"Angola",
+    AQ:	"Antarctica",
+    AR:	"Argentina",
+    AS:	"American Samoa",
+    AT:	"Austria",
+    AU:	"Australia",
+    AW:	"Aruba",
+    AX:	"Åland Islands",
+    AZ:	"Azerbaijan",
+    BA:	"Bosnia & Herzegovina",
+    BB:	"Barbados",
+    BD:	"Bangladesh",
+    BE:	"Belgium",
+    BF:	"Burkina Faso",
+    BG:	"Bulgaria",
+    BH:	"Bahrain",
+    BI:	"Burundi",
+    BJ:	"Benin",
+    BL:	"St. Barthélemy",
+    BM:	"Bermuda",
+    BN:	"Brunei",
+    BO:	"Bolivia",
+    BQ:	"Caribbean Netherlands",
+    BR:	"Brazil",
+    BS:	"Bahamas",
+    BT:	"Bhutan",
+    BV:	"Bouvet Island",
+    BW:	"Botswana",
+    BY:	"Belarus",
+    BZ:	"Belize",
+    CA:	"Canada",
+    CC:	"Cocos (Keeling) Islands",
+    CD:	"Congo - Kinshasa",
+    CF:	"Central African Republic",
+    CG:	"Congo - Brazzaville",
+    CH:	"Switzerland",
+    CI:	"Côte d'Ivoire",
+    CK:	"Cook Islands",
+    CL:	"Chile",
+    CM:	"Cameroon",
+    CN:	"China",
+    CO:	"Colombia",
+    CP:	"Clipperton Island",
+    CR:	"Costa Rica",
+    CU:	"Cuba",
+    CV:	"Cape Verde",
+    CW:	"Curaçao",
+    CX:	"Christmas Island",
+    CY:	"Cyprus",
+    CZ:	"Czechia",
+    DE:	"Germany",
+    DG:	"Diego Garcia",
+    DJ:	"Djibouti",
+    DK:	"Denmark",
+    DM:	"Dominica",
+    DO:	"Dominican Republic",
+    DZ:	"Algeria",
+    EA:	"Ceuta & Melilla",
+    EC:	"Ecuador",
+    EE:	"Estonia",
+    EG:	"Egypt",
+    EH:	"Western Sahara",
+    ER:	"Eritrea",
+    ES:	"Spain",
+    ET:	"Ethiopia",
+    EU:	"European Union",
+    FI:	"Finland",
+    FJ:	"Fiji",
+    FK:	"Falkland Islands",
+    FM:	"Micronesia",
+    FO:	"Faroe Islands",
+    FR:	"France",
+    GA:	"Gabon",
+    GB:	"United Kingdom",
+    GD:	"Grenada",
+    GE:	"Georgia",
+    GF:	"French Guiana",
+    GG:	"Guernsey",
+    GH:	"Ghana",
+    GI:	"Gibraltar",
+    GL:	"Greenland",
+    GM:	"Gambia",
+    GN:	"Guinea",
+    GP:	"Guadeloupe",
+    GQ:	"Equatorial Guinea",
+    GR:	"Greece",
+    GS:	"South Georgia & South Sandwich Islands",
+    GT:	"Guatemala",
+    GU:	"Guam",
+    GW:	"Guinea-Bissau",
+    GY:	"Guyana",
+    HK:	"Hong Kong SAR China",
+    HM:	"Heard & McDonald Islands",
+    HN:	"Honduras",
+    HR:	"Croatia",
+    HT:	"Haiti",
+    HU:	"Hungary",
+    IC:	"Canary Islands",
+    ID:	"Indonesia",
+    IE:	"Ireland",
+    IL:	"Israel",
+    IM:	"Isle of Man",
+    IN:	"India",
+    IO:	"British Indian Ocean Territory",
+    IQ:	"Iraq",
+    IR:	"Iran",
+    IS:	"Iceland",
+    IT:	"Italy",
+    JE:	"Jersey",
+    JM:	"Jamaica",
+    JO:	"Jordan",
+    JP:	"Japan",
+    KE:	"Kenya",
+    KG:	"Kyrgyzstan",
+    KH:	"Cambodia",
+    KI:	"Kiribati",
+    KM:	"Comoros",
+    KN:	"St. Kitts & Nevis",
+    KP:	"North Korea",
+    KR:	"South Korea",
+    KW:	"Kuwait",
+    KY:	"Cayman Islands",
+    KZ:	"Kazakhstan",
+    LA:	"Laos",
+    LB:	"Lebanon",
+    LC:	"St. Lucia",
+    LI:	"Liechtenstein",
+    LK:	"Sri Lanka",
+    LR:	"Liberia",
+    LS:	"Lesotho",
+    LT:	"Lithuania",
+    LU:	"Luxembourg",
+    LV:	"Latvia",
+    LY:	"Libya",
+    MA:	"Morocco",
+    MC:	"Monaco",
+    MD:	"Moldova",
+    ME:	"Montenegro",
+    MF:	"St. Martin",
+    MG:	"Madagascar",
+    MH:	"Marshall Islands",
+    MK:	"Macedonia",
+    ML:	"Mali",
+    MM:	"Myanmar (Burma)",
+    MN:	"Mongolia",
+    MO:	"Macao SAR China",
+    MP:	"Northern Mariana Islands",
+    MQ:	"Martinique",
+    MR:	"Mauritania",
+    MS:	"Montserrat",
+    MT:	"Malta",
+    MU:	"Mauritius",
+    MV:	"Maldives",
+    MW:	"Malawi",
+    MX:	"Mexico",
+    MY:	"Malaysia",
+    MZ:	"Mozambique",
+    NA:	"Namibia",
+    NC:	"New Caledonia",
+    NE:	"Niger",
+    NF:	"Norfolk Island",
+    NG:	"Nigeria",
+    NI:	"Nicaragua",
+    NL:	"Netherlands",
+    NO:	"Norway",
+    NP:	"Nepal",
+    NR:	"Nauru",
+    NU:	"Niue",
+    NZ:	"New Zealand",
+    OM:	"Oman",
+    PA:	"Panama",
+    PE:	"Peru",
+    PF:	"French Polynesia",
+    PG:	"Papua New Guinea",
+    PH:	"Philippines",
+    PK:	"Pakistan",
+    PL:	"Poland",
+    PM:	"St. Pierre & Miquelon",
+    PN:	"Pitcairn Islands",
+    PR:	"Puerto Rico",
+    PS:	"Palestinian Territories",
+    PT:	"Portugal",
+    PW:	"Palau",
+    PY:	"Paraguay",
+    QA:	"Qatar",
+    RE:	"Réunion",
+    RO:	"Romania",
+    RS:	"Serbia",
+    RU:	"Russia",
+    RW:	"Rwanda",
+    SA:	"Saudi Arabia",
+    SB:	"Solomon Islands",
+    SC:	"Seychelles",
+    SD:	"Sudan",
+    SE:	"Sweden",
+    SG:	"Singapore",
+    SH:	"St. Helena",
+    SI:	"Slovenia",
+    SJ:	"Svalbard & Jan Mayen",
+    SK:	"Slovakia",
+    SL:	"Sierra Leone",
+    SM:	"San Marino",
+    SN:	"Senegal",
+    SO:	"Somalia",
+    SR:	"Suriname",
+    SS:	"South Sudan",
+    ST:	"São Tomé & Príncipe",
+    SV:	"El Salvador",
+    SX:	"Sint Maarten",
+    SY:	"Syria",
+    SZ:	"Eswatini",
+    TA:	"Tristan da Cunha",
+    TC:	"Turks & Caicos Islands",
+    TD:	"Chad",
+    TF:	"French Southern Territories",
+    TG:	"Togo",
+    TH:	"Thailand",
+    TJ:	"Tajikistan",
+    TK:	"Tokelau",
+    TL:	"Timor-Leste",
+    TM:	"Turkmenistan",
+    TN:	"Tunisia",
+    TO:	"Tonga",
+    TR:	"Turkey",
+    TT:	"Trinidad & Tobago",
+    TV:	"Tuvalu",
+    TW:	"Taiwan",
+    TZ:	"Tanzania",
+    UA:	"Ukraine",
+    UG:	"Uganda",
+    UM:	"U.S. Outlying Islands",
+    UN:	"United Nations",
+    US:	"United States",
+    UY:	"Uruguay",
+    UZ:	"Uzbekistan",
+    VA:	"Vatican City",
+    VC:	"St. Vincent & Grenadines",
+    VE:	"Venezuela",
+    VG:	"British Virgin Islands",
+    VI:	"U.S. Virgin Islands",
+    VN:	"Vietnam",
+    VU:	"Vanuatu",
+    WF:	"Wallis & Futuna",
+    WS:	"Samoa",
+    XK:	"Kosovo",
+    YE:	"Yemen",
+    YT:	"Mayotte",
+    ZA:	"South Africa",
+    ZM:	"Zambia",
+    ZW:	"Zimbabwe",
+    //}}}
+   };
+
+var score = {
+ pairs: 0,
+ turns: 0,
+ matches: 0,
+ total: Object.keys(current_codes).length
+};
+
+var score_cell;
+
+function updateScore() {
+ var txt = ''
+ for (var k in score) {
+  txt += '<div>' + k + ': ' + score[k] + '</div>';
+ }
+ score_cell.innerHTML = txt;
+}
+
+function flash(msg) {
+ console.log(msg);
+ score_cell.innerHTML = '<div>' + msg + '</div>';
+ score_cell.classList.add('flash');
+ setTimeout(function() {
+  score_cell.classList.remove('flash');
+  updateScore();
+ }, 1000);
+}
+
+var uncovered = [];
+
+function flipCard(cell) {
+ if (cell.classList.contains('found'))
+  return;
+ if (cell.classList.contains('hidden')) {
+  if (uncovered.length < 2) {
+   // uncovering a card that is not the last in a pair,
+   cell.classList.remove('hidden');
+   uncovered.push(cell);
+  } else {
+   flash('You already have two cards out');
+   return false;
+  }
+  if (uncovered.length == 2) {
+   score.pairs += 1;
+   if (uncovered[0].classList[0] == uncovered[1].classList[0]) {
+    score.matches += 1;
+    // mark them found, and remove them from the uncovered list
+    while (uncovered.length > 0) {
+     uncovered.pop().classList.add('found');
+    }
+   }
+  }
+ } else {
+  if (uncovered.length < 2) {
+   // can't re-hide card until turn is over
+   flash('Uncover another card first');
+   return false;
+  }
+  score.turns += 1;
+  // re-hide all cards otherwise
+  while (uncovered.length > 0) {
+   uncovered.pop().classList.add('hidden');
+  }
+ }
+ return true;
+}
+
+function Item(key) {
+ this.key = key;
+ this.name = current_codes[key];
+
+ var c1 = key.codePointAt(0);
+ var c2 = key.codePointAt(1);
+ const offset = 0x1F1E6 - 0x41;
+ this.flag = String.fromCodePoint(c1 + offset, c2 + offset);
+ this.url = 'https://en.wikipedia.org/wiki/' + this.name.replace(/ /g, '_').replace('&', 'and');
+
+ this.cell = function() {
+  var cell = document.createElement('td');
+  cell.classList.add(key);
+  var div = document.createElement('div');
+  div.classList.add('flag');
+  div.innerHTML = this.flag;
+  div.title = this.name;
+  cell.appendChild(div);
+  var a = document.createElement('a');
+  a.classList.add('desc');
+  a.innerHTML = this.name;
+  a.href = this.url;
+  a.target = '_blank';
+  cell.appendChild(a);
+  cell.onclick = function() { if (flipCard(cell)) updateScore(); }
+  return cell;
+ }
+}
+
+var items = {};
+for (var key in current_codes) {
+ items[key] = new Item(key);
+}
+
+var board;
+
+// In the square case, we build a 24x24 board with the full central 22x22 square filled,
+// and 8 additional cards on each side.
+// The top-left cell will be used to show the player score,
+// expressed as pairs/turns/found/total
+function SquareLayout(cards) {
+ var M = 24;
+ var S = 8;
+ var L1 = (M-S)/2;
+ var L2 =  L1 + 8;
+ for (var r = 0; r < M; ++r) {
+  var row = document.createElement('tr');
+  board.appendChild(row);
+  var min_col, max_col;
+  if (r >= L1 && r < L2) {
+   min_col = 0;
+   max_col = M;
+  } else if (r >= 1 && r < M-1) {
+   min_col = 1;
+   max_col = M-1;
+  } else {
+   min_col = L1;
+   max_col = L2;
+  }
+
+  for (var c = 0; c < M; ++c) {
+   var has_card = (c >= min_col && c < max_col);
+   var cell;
+   if (has_card) {
+    cell = cards.pop();
+    cell.classList.add('hidden');
+   } else {
+    cell = document.createElement('td');
+    cell.classList.add('empty');
+    if (r == 0 && c == 0) {
+     cell.id = 'score';
+     score_cell = cell;
+     updateScore();
+    }
+   }
+   row.appendChild(cell);
+  }
+ }
+}
+
+// In the 16:9 or wider case, we build a 34x18 (16x8, scaled by 2 in each direction,
+// plus 2 rows/cols).
+// The inner 32x16 rectangle is filled, and four additional cards are distributed
+// to the top/bottom left/right corners.
+// The scoring cell is the SECOND from the top
+// A similar layout could also used for 4:3 aspect ratio, with 26x20 (4x3 scaled by 6 in each direction,
+// plus 2 rows/cols)
+
+function LayoutCorners(cards, W, H) {
+ for (var r = 0; r < H; ++r) {
+  var row = document.createElement('tr');
+  board.appendChild(row);
+
+  for (var c = 0; c < W; ++c) {
+   var has_card =
+    ((r == 0 || r == H - 1) && (c == 0 || c == W - 1)) ||
+    ((r > 0 && r < H - 1) && (c > 0 && c < W - 1))
+   var cell;
+   if (has_card) {
+    cell = cards.pop();
+    cell.classList.add('hidden');
+   } else {
+    cell = document.createElement('td');
+    cell.classList.add('empty');
+    if (r == 0 && c == 1) {
+     cell.id = 'score';
+     score_cell = cell;
+     updateScore();
+    }
+   }
+   row.appendChild(cell);
+  }
+ }
+}
+
+function Layout16_9(cards) {
+ var W = 2*16+2;
+ var H = 2*8+2;
+ LayoutCorners(cards, W, H);
+}
+
+// Transposed of 16:9
+function Layout9_16(cards) {
+ var H = 2*16+2;
+ var W = 2*8+2;
+ LayoutCorners(cards, W, H);
+}
+
+function Layout4_3(cards) {
+ var W = 6*4+2;
+ var H = 6*3+2;
+ LayoutCorners(cards, W, H);
+}
+
+function Layout3_4(cards) {
+ var H = 6*4+2;
+ var W = 6*3+2;
+ LayoutCorners(cards, W, H);
+}
+
+// An alternative layout for wide screens is to use the 16:8 layout with a single additional
+// row (the first) holding all the extra cards.
+// In our case, this would be a 32x16 rectangle, with the extra four cards
+// placed symmetrically on top.
+// The scoring cell moves back to the top right corner.
+
+function LayoutWideCompact(cards, W, H) {
+ var extra = cards.length - W*H;
+ console.log("Extra: " + extra);
+ if (extra <= 0) {
+  alert('Impossible layout');
+  return;
+ } else if (extra > W) {
+  alert('Too many extras');
+  return;
+ } else if (extra & 1) {
+  alert('Odd extra');
+  return;
+ }
+ var L1 = (W - extra)/2;
+ var L2 = (W + extra)/2;
+ // note the <=, because of the extra initial row
+ for (var r = 0; r <= H; ++r) {
+  var row = document.createElement('tr');
+  board.appendChild(row);
+
+  for (var c = 0; c < W; ++c) {
+   var has_card = r > 0 || (c >= L1 && c < L2);
+   var cell;
+   if (has_card) {
+    cell = cards.pop();
+    cell.classList.add('hidden');
+   } else {
+    cell = document.createElement('td');
+    cell.classList.add('empty');
+    if (r == 0 && c == 0) {
+     cell.id = 'score';
+     score_cell = cell;
+     updateScore();
+    }
+   }
+   row.appendChild(cell);
+  }
+ }
+ console.log(cards);
+}
+
+
+
+function layoutCards(cards, width, height)
+{
+ /*
+  Corner layout, but we prefer the more cmpact one
+  */
+ /*
+ if (width*9 >= height*16) return Layout16_9(cards);
+ if (height*9 >= width*16) return Layout9_16(cards);
+  */
+ /*
+  For small aspect ratios such as 4:3, the square layout is nicer
+  */
+ /*
+ if (width*4 >= height*3) return Layout4_3(cards);
+ if (height*4 >= width*3) return Layout3_4(cards);
+ */
+ /*
+  We set the aspect ratio threshold to 4:3
+  */
+ console.log(width, height);
+ console.log(width*3, height*4);
+ console.log(height*3, width*4);
+ if (width*3 > height*4) return LayoutWideCompact(cards, 32, 16);
+ if (height*3 > width*4) return LayoutWideCompact(cards, 16, 32);
+ return SquareLayout(cards);
+}
+
+window.onload = function() {
+ // generate two cards for each key
+ var cards = [];
+ for (var key in items) {
+  cards.push(items[key].cell());
+  cards.push(items[key].cell());
+ }
+
+ // shuffle (Fisher-Yates/Durstenfeld/Knuth)
+ for (var i = cards.length - 1; i > 0; --i) {
+  var j = Math.floor(Math.random()*(i+1)); // random number in [0, i]
+  [cards[i], cards[j]] = [cards[j], cards[i]]; // swap, requires ES6
+ }
+
+ board = document.getElementById('board');
+ layoutCards(cards, window.innerWidth, window.innerHeight);
+
+};
+//]]>
+  </script>
+ </head>
+ <body>
+  <table id='board'></table>
+ </body>
+</html>
+
