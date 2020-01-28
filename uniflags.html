@@ -57,6 +57,37 @@
   width: 100%;
  }
 
+ .flashcard {
+  position: fixed;
+  bottom: 0;
+  left: 0;
+  right: 0;
+  background: rgba(0.8, 0.8, 0.8, 0.8);
+  font-size: 5vmin;
+  padding: 1vmin;
+  top: 100%;
+  transition: top .5s ease-in;
+ }
+
+ .flashcard .flag {
+  font-size: 200%;
+  width: auto;
+  float: left;
+ }
+
+ .flashcard .desc {
+  text-align: center;
+  font-size: 100%;
+  color: white;
+  text-decoration: none;
+ }
+
+ .flashcard.show {
+  top: calc(100% - 4ex);
+  transition: top .25s ease-out;
+ }
+
+
  #score {
   border-radius: 0 !important;
   border: none !important;
@@ -377,6 +408,11 @@ function flipCard(cell) {
    // uncovering a card that is not the last in a pair,
    cell.classList.remove('hidden');
    uncovered.push(cell);
+   var flashcard = document.getElementById('flashcard' + cell.classList[0]);
+   flashcard.classList.add('show');
+   setTimeout(function() {
+    flashcard.classList.remove('show');
+   }, 2000);
   } else {
    flash('You already have two cards out');
    return false;
@@ -419,17 +455,31 @@ function Item(key) {
  this.cell = function() {
   var cell = document.createElement('td');
   cell.classList.add(key);
+
   var div = document.createElement('div');
   div.classList.add('flag');
   div.innerHTML = this.flag;
   div.title = this.name;
   cell.appendChild(div);
+
   var a = document.createElement('a');
   a.classList.add('desc');
   a.innerHTML = this.name;
   a.href = this.url;
   a.target = '_blank';
   cell.appendChild(a);
+
+  var flashId = 'flashcard' + key;
+  var flashcard = document.getElementById(flashId);
+  if (!flashcard) {
+   flashcard = document.createElement('div');
+   flashcard.id = 'flashcard' + key;
+   flashcard.classList.add('flashcard');
+   flashcard.appendChild(div.cloneNode(true));
+   flashcard.appendChild(a.cloneNode(true));
+   document.body.appendChild(flashcard);
+  }
+
   cell.onclick = function() { if (flipCard(cell)) updateScore(); }
   return cell;
  }
